@@ -1,0 +1,100 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <stack>
+using namespace std;
+
+/*
+3.1 하나의 배열을 사용해 세 개의 스택을 구현하는 방법을 설명하라.
+
+3.2 push와 pop의 두 가지 연산뿐 아니라, 최솟값을 갖는 원소를 반환하는 min 연산을 갖춘 스택은 어떻게 구현할 수 있는가?
+    push, pop, 그리고 min은 공히 O(1)시간에 처리되어야 한다.
+*/
+//solution 3.2!
+class Stack{
+private:
+	struct sw_stack{
+		int value;
+		sw_stack* next;
+	};
+	sw_stack *top;
+	sw_stack *min_top;
+
+public:
+	Stack(){
+		top=nullptr;
+		min_top=nullptr;
+	}
+	void push(int num){
+		sw_stack* newNode=new sw_stack;
+		newNode->value=num;
+		if(isEmpty()){ //첫 push
+			top=newNode;
+			newNode->next=nullptr;
+
+			min_top=newNode;
+			newNode->next=nullptr;
+		} else{ //데이터가 있는경우
+			
+
+			if(newNode->value <= min_top->value){ // 새로운 값이 최솟값 스택의 top보다 작거나 같다면!
+				newNode->next=min_top;
+				min_top=newNode;
+			}else{
+				newNode->next=top;
+				top=newNode;
+			}
+
+		}
+	}
+	void pop(int &result){
+		sw_stack* temp = nullptr;
+		sw_stack* mintemp=nullptr;
+
+		if(isEmpty())
+			cout<<"Empty"<<endl;
+		else{
+			result=top->value;
+			if(top->value==min_top->value){
+				mintemp = min_top->next;
+				min_top=mintemp;
+			}
+			if(!min_top)
+				cout<<"Minimual is Empty"<<endl;
+
+			temp=top->next;
+			top=temp;
+		}
+	}
+	bool isEmpty(){
+		return !top;
+	}
+	void get_min(int &node){
+		node=min_top->value;
+	}
+};
+void test(){
+	int pop,min_va;
+	Stack st;
+	st.push(4);
+	st.push(6);
+	st.push(23);
+	st.push(76);
+	st.push(100);
+	st.push(0);
+	st.get_min(min_va);
+	cout<<min_va<<endl;
+	st.pop(pop);
+	cout<<pop<<endl;
+	st.get_min(min_va);
+	cout<<min_va<<endl;
+
+	st.pop(pop);
+	cout<<pop<<endl;
+	st.pop(pop);
+	cout<<pop<<endl;
+}
+int main(void){
+	test();	
+	return 0;
+}
